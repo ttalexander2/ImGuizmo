@@ -630,7 +630,7 @@ static bool DrawNode(ImDrawList* drawList,
                       nodeRectangleMax,
                       currentSelectedNode ? options.mSelectedNodeBorderColor : options.mNodeBorderColor,
                       options.mRounding,
-                      ImDrawFlags_RoundCornersAll,
+       ImDrawCornerFlags_All,
                       currentSelectedNode ? options.mBorderSelectionThickness : options.mBorderThickness);
 
     ImVec2 imgPos = nodeRectangleMin + ImVec2(14, 25);
@@ -756,7 +756,7 @@ bool DrawMiniMap(ImDrawList* drawList, Delegate& delegate, ViewState& viewState,
     const float ratioX = viewSize.x / nodesSize.x;
     const float factor = ImMin(ImMin(ratioY, ratioX), 1.f);
 
-    drawList->AddRectFilled(minScreen, maxScreen, IM_COL32(30, 30, 30, 200), 3, ImDrawFlags_RoundCornersAll);
+    drawList->AddRectFilled(minScreen, maxScreen, IM_COL32(30, 30, 30, 200), 3, ImDrawCornerFlags_All);
 
     for (NodeIndex nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
     {
@@ -772,18 +772,18 @@ bool DrawMiniMap(ImDrawList* drawList, Delegate& delegate, ViewState& viewState,
         rect.Max *= factor;
         rect.Max += middleScreen;
 
-        drawList->AddRectFilled(rect.Min, rect.Max, nodeTemplate.mBackgroundColor, 1, ImDrawFlags_RoundCornersAll);
+        drawList->AddRectFilled(rect.Min, rect.Max, nodeTemplate.mBackgroundColor, 1, ImDrawCornerFlags_All);
         if (node.mSelected)
         {
-            drawList->AddRect(rect.Min, rect.Max, options.mSelectedNodeBorderColor, 1, ImDrawFlags_RoundCornersAll);
+            drawList->AddRect(rect.Min, rect.Max, options.mSelectedNodeBorderColor, 1, ImDrawCornerFlags_All);
         }
     }
 
     // add view
     ImVec2 viewMinScreen = (viewMin - middleWorld) * factor + middleScreen;
     ImVec2 viewMaxScreen = (viewMax - middleWorld) * factor + middleScreen;
-    drawList->AddRectFilled(viewMinScreen, viewMaxScreen, IM_COL32(255, 255, 255, 32), 1, ImDrawFlags_RoundCornersAll);
-    drawList->AddRect(viewMinScreen, viewMaxScreen, IM_COL32(255, 255, 255, 128), 1, ImDrawFlags_RoundCornersAll);
+    drawList->AddRectFilled(viewMinScreen, viewMaxScreen, IM_COL32(255, 255, 255, 32), 1, ImDrawCornerFlags_All);
+    drawList->AddRect(viewMinScreen, viewMaxScreen, IM_COL32(255, 255, 255, 128), 1, ImDrawCornerFlags_All);
     
     ImGuiIO& io = ImGui::GetIO();
     const bool mouseInMinimap = ImRect(minScreen, maxScreen).Contains(io.MousePos);
