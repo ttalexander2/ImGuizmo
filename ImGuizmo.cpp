@@ -24,6 +24,8 @@
 // SOFTWARE.
 //
 
+#include "Chroma/Core/Log.h"
+
 #include "imgui.h"
 #ifndef IMGUI_DEFINE_MATH_OPERATORS
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -1306,6 +1308,7 @@ namespace ImGuizmo
             ImVec2 worldDirSSpaceNoScale = worldToPos(dirAxis * markerScale * gContext.mScreenFactor, gContext.mMVP);
             ImVec2 worldDirSSpace = worldToPos((dirAxis * markerScale * scaleDisplay[i]) * gContext.mScreenFactor, gContext.mMVP);
 
+
             if (gContext.mbUsing && (gContext.mActualID == -1 || gContext.mActualID == gContext.mEditingID))
             {
                drawList->AddLine(baseSSpace, worldDirSSpaceNoScale, IM_COL32(0x40, 0x40, 0x40, 0xFF), 3.f);
@@ -1879,8 +1882,48 @@ namespace ImGuizmo
       if (gContext.mbUsing && (gContext.mActualID == -1 || gContext.mActualID == gContext.mEditingID) && IsTranslateType(gContext.mCurrentOperation))
       {
          ImGui::CaptureMouseFromApp();
+
+
+         //Added this to prevent NAN errors when transform is 0
+         if (std::isnan(gContext.mTranslationPlan.x))
+         {
+            gContext.mTranslationPlan.x = 0;
+         }
+         if (std::isnan(gContext.mTranslationPlan.y))
+         {
+            gContext.mTranslationPlan.y = 0;
+         }
+         if (std::isnan(gContext.mTranslationPlan.z))
+         {
+            gContext.mTranslationPlan.z = 0;
+         }
+         if (std::isnan(gContext.mTranslationPlan.w))
+         {
+            gContext.mTranslationPlan.w = 0;
+         }
+
+
          const float len = fabsf(IntersectRayPlane(gContext.mRayOrigin, gContext.mRayVector, gContext.mTranslationPlan)); // near plan
+
          vec_t newPos = gContext.mRayOrigin + gContext.mRayVector * len;
+
+         //Added this to prevent NAN errors when transform is 0
+         if (std::isnan(gContext.mRelativeOrigin.x))
+         {
+            gContext.mRelativeOrigin.x = 0;
+         }
+         if (std::isnan(gContext.mRelativeOrigin.y))
+         {
+            gContext.mRelativeOrigin.y = 0;
+         }
+         if (std::isnan(gContext.mRelativeOrigin.z))
+         {
+            gContext.mRelativeOrigin.z = 0;
+         }
+         if (std::isnan(gContext.mRelativeOrigin.w))
+         {
+            gContext.mRelativeOrigin.w = 0;
+         }
 
          // compute delta
          vec_t newOrigin = newPos - gContext.mRelativeOrigin * gContext.mScreenFactor;
